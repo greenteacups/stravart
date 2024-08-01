@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
@@ -44,17 +45,23 @@ def compute_overlap(grid_points, shape, n_rows, n_cols, spacing):
     
     return overlaps
 
+def read_shape_coords_from_file(file_path):
+    data = pd.read_csv(file_path)
+    coords = data[['X', 'Y']].values.tolist()
+    return coords
+
 # Parameters
-n_rows = 5
-n_cols = 5
-spacing = 1
+n_rows = 20
+n_cols = 20
+spacing = 0.05
 
 # Generate grid and lines
 grid_points = generate_grid(n_rows, n_cols, spacing)
 grid_lines = generate_lines(grid_points, n_rows, n_cols)
 
 # Define the shape polygon
-shape_coords = [(1.1, 1.2), (0.9, 2.2), (1.5, 4.1), (3.1, 4.1), (2, 0.9)]
+file_path = 'drawing-coords.dat'
+shape_coords = read_shape_coords_from_file(file_path)
 shape = Polygon(shape_coords)
 
 # Compute overlap
@@ -66,14 +73,14 @@ for (square, overlap, polygon) in overlapping_squares:
     print(f"Square {square}: {overlap:.2f}% overlap")
 
 # Merge squares with more than X% overlap into a single polygon
-polygons_to_merge = [polygon for (square, overlap, polygon) in overlapping_squares if overlap > 30]
+polygons_to_merge = [polygon for (square, overlap, polygon) in overlapping_squares if overlap > 50]
 merged_polygon = unary_union(polygons_to_merge) if polygons_to_merge else None
 
 # Plot the grid and shape
 plt.figure(figsize=(8, 8))
 for grid_line in grid_lines:
     start, end = grid_line
-    plt.plot([start[0], end[0]], [start[1], end[1]], 'bo-')
+    #plt.plot([start[0], end[0]], [start[1], end[1]], 'bo-')
     
 plt.plot(*shape.exterior.xy, 'ro--')
 
