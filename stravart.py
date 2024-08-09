@@ -104,7 +104,7 @@ def process_shape_and_grid(shape_file, grid_file, angle_of_rotation, scaling_fac
     if plot_results_flag:
         plot_results(grid_polygons, translated_shape, overlapping_polygons, merged_polygon)
 
-    weighted_average = merged_polygon.area / shape.area if merged_polygon else 0
+    weighted_average = merged_polygon.area / (shape.area*scaling_factor) if merged_polygon else 0
     
     return weighted_average if merged_polygon else 0  # Return 0 or another value if there's an issue with the export
 
@@ -114,11 +114,11 @@ def process_shape_and_grid(shape_file, grid_file, angle_of_rotation, scaling_fac
 process_shape_and_grid(
     shape_file = 'drawing-coords.dat',
     grid_file = 'road-coords.dat',
-    angle_of_rotation = 6.86,	            # Angle in degrees
-    scaling_factor = 1.0,                   # Scaling factor
+    angle_of_rotation = 32.54,	            # Angle in degrees
+    scaling_factor = 0.5,                   # Scaling factor
     overlapper = 80.0,                      # % overlap to include block
     x_translation = 0.1,
-    y_translation = 0.1,
+    y_translation = -0.1,
     plot_results_flag = 1                   # Set to False to skip plotting
 )
 
