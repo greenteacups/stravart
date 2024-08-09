@@ -114,18 +114,18 @@ def process_shape_and_grid(shape_file, grid_file, angle_of_rotation, scaling_fac
 process_shape_and_grid(
     shape_file = 'drawing-coords.dat',
     grid_file = 'road-coords.dat',
-    angle_of_rotation = -19.3, #32.56,      # Angle in degrees
-    scaling_factor = 0.8,                   # Scaling factor
+    angle_of_rotation = 6.86,	            # Angle in degrees
+    scaling_factor = 1.0,                   # Scaling factor
     overlapper = 80.0,                      # % overlap to include block
     x_translation = 0.1,
-    y_translation = -0.1,
+    y_translation = 0.1,
     plot_results_flag = 1                   # Set to False to skip plotting
 )
 
 """
 def objective_function(params, *args):
-    shape_file, grid_file, scaling_factor, overlapper = args
-    angle_of_rotation, x_translation, y_translation = params
+    shape_file, grid_file, overlapper = args
+    angle_of_rotation, x_translation, y_translation, scaling_factor = params
     weighted_average = process_shape_and_grid(
         shape_file=shape_file,
         grid_file=grid_file,
@@ -138,16 +138,14 @@ def objective_function(params, *args):
     )
     return -weighted_average  # Minimize the negative of the weighted average
 
-
 # Define parameters for optimization
 shape_file = 'drawing-coords.dat'
 grid_file = 'road-coords.dat'
-scaling_factor = 0.8
 overlapper = 80.0
 
-# Set the initial guess and bounds for the angle_of_rotation and translations
-initial_guess = [0, 0, 0]  # [angle_of_rotation, x_translation, y_translation]
-bounds = [(-180, 180), (-0.1, 0.1), (-0.1, 0.1)]  # Angle of rotation and translations can vary
+# Set the initial guess and bounds for the angle_of_rotation, translations, and scaling factor
+initial_guess = [0, 0, 0, 0.8]  # [angle_of_rotation, x_translation, y_translation, scaling_factor]
+bounds = [(-180, 180), (-0.1, 0.1), (-0.1, 0.1), (0.5, 1.0)]  # Angle of rotation, translations, and scaling factor
 
 # Run basinhopping
 result = basinhopping(
@@ -159,14 +157,13 @@ result = basinhopping(
     minimizer_kwargs={
         'method': 'L-BFGS-B',
         'bounds': bounds,
-        'args': (shape_file, grid_file, scaling_factor, overlapper)
+        'args': (shape_file, grid_file, overlapper)
     }
 )
 
 print(f"Optimal angle of rotation: {result.x[0]:.2f} degrees")
 print(f"Optimal x translation: {result.x[1]:.2f}")
 print(f"Optimal y translation: {result.x[2]:.2f}")
+print(f"Optimal scaling factor: {result.x[3]:.2f}")
 print(f"Maximum weighted average: {-result.fun:.2f}")
-
 """
-
